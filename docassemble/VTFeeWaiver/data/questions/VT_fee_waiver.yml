@@ -2449,31 +2449,10 @@ attachments:
           % endif
    
       - "users1_benefits": |
-          % if public_benefits.number_gathered() > 0:
-          % if defined("public_benefits[0].source"):
-          % if public_benefits[0].source == "other":
-          ${ public_benefits[0].display_name }
+          % if public_benefits.number_gathered() < 4:
+          ${ comma_list(public_benefit.display_name for public_benefit in public_benefits.complete_elements()) }
           % else:
-          ${ public_benefits[0].source }
-          % endif
-          % endif
-          % if defined("public_benefits[1].source"):
-          % if public_benefits[1].source == "other":
-          , ${ public_benefits[1].display_name }
-          % else:
-          , ${ public_benefits[1].source }
-          % endif
-          % endif
-          % if defined("public_benefits[2].source"):
-          % if public_benefits[2].source == "other":
-          , ${ public_benefits[2].display_name }
-          % else:
-          , ${ public_benefits[2].source }
-          % endif
-          % endif
-          % if defined("public_benefits[3].source"):
-          .....
-          % endif
+          ${ comma_list(public_benefits[0].display_name, public_benefits[1].display_name, public_benefits[2].display_name) }...
           % endif
           
       - "users1_benefits_monthly_amount": |
