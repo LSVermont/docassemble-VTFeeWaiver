@@ -2450,9 +2450,9 @@ attachments:
    
       - "users1_benefits": |
           % if public_benefits.number_gathered() < 4:
-          ${ comma_list(public_benefit.display_name for public_benefit in public_benefits.complete_elements()) }
+          ${ comma_list((public_benefit.source for public_benefit in public_benefits.matches(source=["3SquaresVT","Dr Dynasaur","Fuel Assist.","GA","Housing Assist.","Medicaid","Reach Up","SSI"])),(public_benefit.display_name for public_benefit in public_benefits.matches(source="other"))) }
           % else:
-          ${ comma_list(public_benefits[0].display_name, public_benefits[1].display_name, public_benefits[2].display_name) }...
+          ${ comma_list((public_benefits[0].display_name if public_benefits[0].source == "other" else public_benefits[0].source), (public_benefits[1].display_name if public_benefits[1].source == "other" else public_benefits[1].source), (public_benefits[2].display_name if public_benefits[2].source == "other" else public_benefits[2].source)) }...
           % endif
           
       - "users1_benefits_monthly_amount": |
