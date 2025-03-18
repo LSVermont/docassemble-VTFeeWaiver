@@ -1255,7 +1255,7 @@ fields:
     datatype: al_international_phone
     required: False
   - Work phone or other phone number: users[0].work_phone_number
-    maxlength: 26
+    datatype: al_international_phone
     required: False
   - Email address: users[0].email    
     datatype: email
