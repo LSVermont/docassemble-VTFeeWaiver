@@ -57,10 +57,26 @@ metadata:
   authors:
     - VTCourtForms guided interview by Legal Services Vermont / VTLawHelp.org website
     - Authored by Legal Services Vermont
+  landing_page_url: https://vtlawhelp.org/vtcourtforms/fee-waiver
   categories:
     - "FA-00-00-00-00"
     - "HO-00-00-00-00"
     - "MO-00-00-00-00"
+  tags:
+    - "FA-00-00-00-00"
+    - "HO-00-00-00-00"
+    - "MO-00-00-00-00"
+  LIST_topics:
+    - "FA-00-00-00-00"
+    - "HO-00-00-00-00"
+    - "MO-00-00-00-00"
+  jurisdiction: NAM-US-US+VT
+  can_I_use_this_form: |
+    This is a VTCourtForms tool. VTCourtForms was designed to be used by people who are not represented by a lawyer. You can use this tool to ask for a fee waiver in any Vermont court. At this time, this tool is only available in English.
+  before_you_start: |
+    [Visit this page to see what you will need to know before you start.](https://vtlawhelp.org/vtcourtforms/fee-waiver)
+  when_you_are_finished: |
+    At the end you will get a chance to preview your form and make changes if you need to. Then you can download, save, print and/or email a PDF of your completed form. You will also get an instruction sheet about how to get the completed form to the court.
   typical role: "plaintiff"
   generate download screen: True
 ---
