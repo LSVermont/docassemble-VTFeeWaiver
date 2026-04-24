@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "docassemble.VTFeeWaiver"
-version = "1.2"
+version = "1.3"
 description = "Fee waiver - Vermont - Form 600-00228"
 readme = "README.md"
 dependencies = [
