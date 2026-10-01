@@ -1,4 +1,16 @@
 ---
+comment: |
+    
+  This is the fee waiver to_include file that is used in other guided interviews.
+
+  This file includes an updated template and code on 4/29/2026 due to a new form from the courts.
+
+  Note that the PDF template and attachment code here is different than the stand-alone waiver interview. This template file has  _FW added to attachment code fieldnames. We did this to have unique fieldnames and avoid mishaps when there are multiple PDFs.
+
+  This file is used with the Small Claims Answer and Super Court Debt Answer interviews.
+
+  
+---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
   - docassemble.ALToolbox:phone-number-validation.yml
@@ -9,174 +21,21 @@ modules:
   - .al_income_move
 ---
 objects:
-  - all_courts: ALCourtLoader.using(file_name='docassemble.VTSharedYMLFile:data/sources/courts_list_full.xlsx')
----
-code: |
-  trial_court_index = all_courts.matching_courts_in_county(county_name=user_selected_county,search_columns=['division_abbr'],search_string=trial_court_division)[0][0]
----
-objects:
   - users: ALPeopleList.using(ask_number=True,target_number=1)
   - jobs: ALItemizedJobList.using(complete_attribute="complete", ask_number=True)
 ---
 objects:
   - jobs[i].to_add: ALItemizedValueDict.using(complete_attribute="complete", there_are_any=True)
 ---
-
-
-############### REMOVE this code below when testing is done  ##########
----
-#default screen parts:
-#  pre: |
-#    % if not url_args.get("hide_hud", "").lower() in ["1", "on", "true", "yes"]:
-#    `id: ${ user_info().question_id }`[BR]
-#    `Variable: ${ user_info().variable }`[BR]
-#    `Version: ${ user_info().package.replace("docassemble.", "") + " " if not user_info().package.startswith("docassemble.playground") else "" }${ package_version_number }; ${ al_version }`
-#    % endif
----
-##########################################################################
-
-
----
-comment: |
-  Global interview metadata
-metadata:
-  al_weaver_version: "1.7.0"
-  generated on: "2022-08-19"
-  title: >-
-    Ask to waive court filing and service fees
-  short title: >-
-    Fee waiver
-  description: |-
-    Fee waiver for Vermont courts. Based on Vermont Judiciary paper form 600-00228 (3/2025).
-  original_form: >-
-    https://www.vermontjudiciary.org/media/47
-  help_page_url: >-
-    https://www.vermontjudiciary.org/self-help/application-waive-filing-fees-and-service-costs
-  help_page_title: >-
-    Application to Waive Filing Fees and Service Costs on the Vermont Judiciary website
-  authors:
-    - VTCourtForms guided interview by Legal Services Vermont / VTLawHelp.org website
-    - Authored by Legal Services Vermont
-  landing_page_url: https://vtlawhelp.org/vtcourtforms/fee-waiver
-  categories:
-    - "FA-00-00-00-00"
-    - "HO-00-00-00-00"
-    - "MO-00-00-00-00"
-  tags:
-    - "FA-00-00-00-00"
-    - "HO-00-00-00-00"
-    - "MO-00-00-00-00"
-  LIST_topics:
-    - "FA-00-00-00-00"
-    - "HO-00-00-00-00"
-    - "MO-00-00-00-00"
-  jurisdiction: NAM-US-US+VT
-  can_I_use_this_form: |
-    This is a VTCourtForms tool. VTCourtForms was designed to be used by people who are not represented by a lawyer. You can use this tool to ask for a fee waiver in any Vermont court. At this time, this tool is only available in English.
-  before_you_start: |
-    [Visit this page to see what you will need to know before you start.](https://vtlawhelp.org/vtcourtforms/fee-waiver)
-  when_you_are_finished: |
-    At the end you will get a chance to preview your form and make changes if you need to. Then you can download, save, print and/or email a PDF of your completed form. You will also get an instruction sheet about how to get the completed form to the court.
-  typical role: "plaintiff"
-  generate download screen: True
----
-# customized feedback form
-code: |   
-  feedback_form = "docassemble.VTFeedback:VTfeedback.yml"
----
-code: |
-  interview_metadata['main_interview_key'] =  'VT_fee_waiver'
----
-code: |
-  github_repo_name =  'docassemble-VTFeeWaiver'
----
-#this will correct the last-updated date that gets shown on About This Form page
-code: |
-  res = github_modified_date(github_user, "docassemble-VTFeeWaiver")
-  if res:
-    package_updated_on = res.format('yyyy-MM-dd')
-  else:
-    package_updated_on = None  
----
-code: |
-  interview_short_title = "Ask to waive court filing and service fees in Vermont"
----
-code: |
-  al_form_type = "existing_case" 
----
-############Code below to allow Edit my answers to be clicked in Menu or in side nav#########
----
-reconsider: True
-code: |
-  al_menu_items_tmp = [
-    {"url": url_ask(['al_start_over_confirmation','al_start_over']),
-    "label": "Start over"
-    },
-    {
-      "url": url_ask(['al_exit_logout_confirmation', 'al_exit_logout']),
-      "label": "Exit and delete my answers"
-    },
-  ]
-  if al_enable_incomplete_downloads:
-    al_menu_items_tmp.append({
-        "url": url_action('al_error_action_download_screen'), 
-        "label": "Download current progress"
-    })
-  
-  # Answer set feature is behind a server-wide configuration option
-  if get_config('assembly line',{}).get('enable answer sets'):
-    al_menu_items_tmp.extend([
-    {"url": url_ask(["al_sessions_snapshot_label", {"recompute": ["al_sessions_save_session_snapshot"]}, "al_sessions_save_status"]),
-    "label": "Save answer set"
-    },
-    action_menu_item("Load answer set", "al_load_saved_session"),
-  ]
-  )
-  
-  if get_config('assembly line',{}).get('enable answer set imports'):
-    al_menu_items_tmp.append(
-      {"url": url_ask(["al_sessions_json_file", {"recompute": ["al_sessions_import_json"]}, "al_sessions_load_status"]),
-      "label": "Import answer set"
-      }
-    )
-  al_menu_items_tmp.append(
-    {
-      "url": url_action('edit_answers_screen'),
-      "label": "Edit my answers"
-      
-    }
-  )
-    
-  al_menu_items = al_menu_items_tmp
-  del al_menu_items_tmp
----
-event: edit_answers_screen
-id: edit answers screen
-question: |
-  Edit your answers
-subquestion: |
-  ${ action_button_html(url_action('review_VT_fee_waiver'), label='<i class="fa-solid fa-pencil"></i> Edit your answers', color='info') }
-  
-  Remember to come back to this screen to continue.
-continue button field: VT_fee_waiver_preview_question
----
 sections:
-  - intro: Is this tool right for you
-  - about_you: You and your household
-  - case_info: Your court case
+  - do_fee_waiver: Fee waiver
   - your_income: Your income
   - your_expenses: Your expenses
   - your_assets: Your property and assets
   - reasons: Other info
-  - review_VT_fee_waiver: <i class="fa-solid fa-pencil"></i> <u>Edit your answers</u>
-  - sign: Sign your document
-  - get_docs: Download your document
 progressive: False
 ---
-###This adds the signature feature to the interview###
-code: |
-  signature_fields = ['users[0].signature']
----
+
 #################### INTERVIEW ORDER #####################
 ---
 comment: |
@@ -186,37 +45,28 @@ code: |
   
   # Below sets the user_role by asking a question.
   # You can set user_role directly instead to either 'plaintiff' or 'defendant'
-  nav.set_section('intro')
 
-  VT_fee_waiver_intro
+  nav.set_section('do_fee_waiver')
+  lets_start_fee_waiver
+
   set_progress(5)
   important_notes_to_user
-  #user_ask_role
   
   set_progress(10)
-  nav.set_section('about_you')
+
+  user_ask_role
   users.gather()
   users[0].address.address
   set_progress(15)
   users[0].phone_number
+  users[0].email
   household_size
   
-  nav.set_section('case_info')
+
   set_progress(20)
-  case_name
   docket_number
   set_progress(25)
   
-  #This is where we collect the desired court division and county. With those two pieces of info and our comprehensive courts_list_full spreadsheet, the exact court is determined. We also allow the user to say they don't know.
-  trial_court_division
-  if trial_court_division == "Environmental":
-    user_selected_county = "Environmental"
-  if trial_court_division == "Judicial Bureau":
-    user_selected_county = "Judicial Bureau"
-  user_selected_county
-  trial_court.address.county
-  
-  nav.set_section('your_income')
   set_progress(30)
   if len(public_benefits) > 0:
     public_benefits.review_items
@@ -233,14 +83,12 @@ code: |
     if len(other_incomes) > 0:
       other_incomes.review_items
 
-    nav.set_section('your_expenses')
     set_progress(50)
     expenses_intro
     if len(expenses) > 0:
       expenses.review_items
 
     set_progress(60)
-    nav.set_section('your_assets')
     assets_intro
   
     if len(vehicles) > 0:
@@ -258,7 +106,6 @@ code: |
     if len(other_assets) > 0:
       other_assets.review_items        
       
-    nav.set_section('reasons')
     set_progress(80)
     other_reasons_why_cannot_afford
     
@@ -267,43 +114,19 @@ code: |
   self_employed_jobs
   employer_jobs_review_table
   self_employed_jobs_review_table
+  
   interview_order_VT_fee_waiver = True
 
 ---
-###################### MAIN INTERVIEW ORDER ######################
-comment: |
-  This block includes the logic for standalone interviews.
-  Delete mandatory: True to include in another interview
-mandatory: True
-code: |
-  al_intro_screen
-  interview_order_VT_fee_waiver
-  nav.set_section("review_VT_fee_waiver")
-  trial_court.address.county
-  VT_fee_waiver_preview_question
-  set_progress(92)
-  nav.set_section('sign')
-  signature_date
-  set_progress(95)
-  al_form_requires_digital_signature = False
-  basic_questions_signature_flow
-  
-    # Store anonymous data for analytics / statistics
-  store_variables_snapshot(
-      persistent=True,
-      data={
-          "zip": showifdef("users[0].address.zip"),
-          "county_where_filing": showifdef("trial_court.address.county"),
-          "court_division_where_filing": showifdef("trial_court.division_abbr"),
-          "gets_public_benefits": public_benefits.number_gathered() > 0,
-          "employed": showifdef("employed"),
-          "reached_interview_end": True,
-          "num_forms": len(al_user_bundle.enabled_documents()),
-      },
-  )
-  nav.set_section('get_docs')
-  set_progress(100)
-  VT_fee_waiver_download
+id: lets start fee waiver
+question: |
+  Let's start the fee waiver form questions
+subquestion: |
+  You've already answered some of the questions that are asked in the fee waiver form. Now we'll work through the remaining questions.
+
+  Tap Next to get started.
+
+continue button field: lets_start_fee_waiver
 ---
 ################################# PUBLIC BENEFITS ##############################
 comment: |
@@ -337,7 +160,7 @@ comment: |
 id: public_benefits terms_ordered
 variable name: public_benefits.terms_ordered
 data: !!omap
-  - 3SquaresVT: "3SquaresVT (food)"
+  - 3SquaresVT: "3SquaresVT/SNAP (food)"
   - Dr Dynasaur: "Dr. Dynasaur"
   - Fuel Assist.: "Fuel Assistance"
   - General Assist.: "General Assistance (GA)"
@@ -375,11 +198,9 @@ code: |
 id: are there public benefits
 #public_benefits
 question: |
-  Do you get public assistance?
-subquestion: |
-  Do you get any kind of government benefit that is based on need, disability, dependent children, or another reason based on your income?
-  
-  We've included a few examples below. You can also check "other."
+    Do you get public assistance? If so, what kind?
+subquestion: |  
+  We've included examples of government benefits that are based on need, disability, dependent children, or another reason based on your income. Check any that you receive. You can also check "other."
   
   Check any that apply to you.
 fields:
@@ -492,12 +313,13 @@ question: |
 subquestion: |
   Because you get public assistance, we can skip many of the questions in the form.
   
-  Tap Next to answer a few more questions.
+  Tap Next.
 ---
 ################################# OTHER INCOMES ##############################
 ---
 variable name: other_incomes.terms_ordered
 data: !!omap
+  - investments: "Income from investments"
   - unemployment income: "Unemployment benefits"
   - child support income: "Child support"
   - other: "Other"
@@ -1058,7 +880,7 @@ edit:
 id: basic questions intro screen
 decoration: form-lineal
 question: |
-  **${interview_short_title}**
+  ${interview_short_title}
 subquestion: |  
 
   <p>${ intro_vtcourtforms_3_steps }</p>
@@ -1076,24 +898,11 @@ subquestion: |
 continue button field: al_intro_screen
 ---
 id: VT fee waiver intro
-continue button field: VT_fee_waiver_intro
+continue button field: VT_fee_waiver_intro_shortened
 question: |
   Is this tool right for you?
 subquestion: | 
-  ${ start_accordion('<h2 class="h5">Do you need this fee waiver form?</h2>') }
-  <p>Before you begin, check to be sure you actually need to pay a court filing fee.</p>
-  
-  <p>When you ask the court for a Relief from Abuse (RFA) order, there are no court fees. It is free. Here is the full list of forms that have no filing fee:</p>
-  
-  <ul><li>Request for Relief from Abuse</li>
-  <li>Request for Abuse Prevention for a Vulnerable Adult</li>
-  <li>Request for Order Against Stalking</li>
-  <li>Request for Order Against Sexual Assault</li>
-  <li>Request for Extreme Risk Protection Order</li>
-  <li>Abusive Litigation</li></ul>
-  <p>You do not pay a fee to file an "answer" in a court case. However, there is a fee to file a "counterclaim" in some cases (such as eviction or small claims), but not others (such as divorce or parentage).</p>
-
-  ${ next_accordion('<h2 class="h5">Who can get their fees waived?</h2>') }
+  ${ start_accordion('<h2 class="h5">Who can get their fees waived?</h2>') }
   The Vermont Judiciary says the court can waive your filing fee and service costs if:
   
   <ul><li>you get any kind of public assistance, or</li>
@@ -1102,7 +911,7 @@ subquestion: |
 
   ${ next_accordion('<h2 class="h5">Information you will need</h2>') }
   <ul><li>the name and address of any employer you might have</li>
-  <li>any public assistance that you get (like 3SquaresVT food help, ReachUp help for families, SSI, etc.) and the amount, and</li>
+  <li>any public assistance that you get (like 3SquaresVT/SNAP food help, ReachUp help for families, SSI, etc.) and the amount, and</li>
   <li>information about the court case for which you want a fee waiver. (You can find this information on other court papers you have about this case. If you are starting a court action — like filing for divorce — you won't have a case number or docket number yet.)</li></ul>
   
   <p>If you get public assistance, that's all you need. <strong>If you don't get public assistance</strong>, you will also need to know:</p>
@@ -1118,18 +927,6 @@ subquestion: |
   <p>Ask for general help with court forms or the court process by contacting the <a href="https://www.vermontjudiciary.org/self-help/ARC">Vermont Judiciary Access and Resource Center.</a> Their services are free and they serve the whole state. They do NOT give legal advice.</p>
 
   ${ end_accordion() }
-
-  <h4>Our terms of use</h4>
-fields:
-  - To continue, please accept our [terms of use](https://vtlawhelp.org/vtcourtforms/terms-of-use).: acknowledged_information_use
-    datatype: checkboxes
-    none of the above: False    
-    minlength: 1
-    choices:
-      - I accept the terms of use.
-    validation messages:
-      minlength: |
-        You cannot continue unless you agree to the terms of use.
 ---
 id: important_notes_to_user
 question: |
@@ -1166,21 +963,6 @@ fields:
       users[i].name_fields()
   - note: |
       ${ collapse_template(asterisk) }
----
-id: court case information
-question: |
-  What is the name of the court case you are involved in?
-subquestion: |
-  Example: Joanna Kramer v. Ted Kramer
-  
-  The plaintiff is listed first, then the defendant.
-fields:
-  - "Case name, as seen on your court papers": case_name
-    maxlength: 80
-  - note: |
-      **Note**: If you are starting a case, you are the plaintiff. Type in your first and last name "v." the first and last name of the other party / defendant(s).
-      
-      If you are a defendant in a case, type in the plaintiff's first and last name(s) "v." your first and last name. If you are filing a counterclaim, you remain the defendant. Use the plaintiff and defendant names as seen on the original court papers you got.
 ---
 id: choose a court division
 question: |
@@ -1246,7 +1028,10 @@ fields:
   - Zip or postal code: users[0].mailing_address.zip
     required: False
     show if: users1_mailing_address_different
-
+---
+code: |
+  if defined("household_others.target_number"):
+    household_size = household_others.target_number + 1
 ---
 id: About you
 question: |
@@ -1271,11 +1056,11 @@ fields:
     datatype: al_international_phone
     required: False
   - Work phone or other phone number: users[0].work_phone_number
+    maxlength: 26
     datatype: al_international_phone
     required: False
   - Email address: users[0].email    
     datatype: email
-    required: False
 ---
 continue button field: users.revisit
 question: |
@@ -1314,7 +1099,7 @@ confirm: True
 ############################# EXPENSES #############################
 ---
 id: expenses intro
-mandatory: True
+#mandatory: True
 continue button field: expenses_intro
 question: |
   Expenses
@@ -1482,7 +1267,7 @@ edit:
   - value
 ---
 id: assets intro
-mandatory: True
+#mandatory: True
 continue button field: assets_intro
 question: |
   Assets
@@ -1937,7 +1722,7 @@ columns:
 edit:
   - source
   - market_value
-  - balance
+
 
 ---
 
@@ -1953,73 +1738,69 @@ fields:
     input type: area
     maxlength: 1000
     required: False
-  - note: |
-      **We’re ready to generate your draft form so you can review it!** It will take a moment after you tap the Next button.
-
-#${ after_last_question_we_will_generate_your_forms }
 ---
 ############################# SIGNATURE #############################
----
-id: User signature
-question: |
-  User signature
-continue button field: User_signature
----
-id: signature choice
-decoration: file-signature
-question: |
-  Your documents are almost ready
-subquestion: |
-  How do you want to sign them?
-fields: 
-  - I will sign: signature_choice
-    input type: radio
-    choices:
-      - On my computer or phone: this_device
-    show if:
-      code: |
-        al_form_requires_digital_signature
-  - I will sign: signature_choice
-    input type: radio
-    choices:
-      - On my computer or phone: this_device
-      - On the paper with a pen after I print the documents: sign_after_printing
-    show if:
-      code: |
-        not al_form_requires_digital_signature
-continue button field: saw_signature_choice    
+#---
+#id: User signature
+#question: |
+#  User signature
+#continue button field: User_signature
+#---
+#id: signature choice
+#decoration: file-signature
+#question: |
+#  Your documents are almost ready
+#subquestion: |
+#  How do you want to sign them?
+#fields: 
+#  - I will sign: signature_choice
+#    input type: radio
+#    choices:
+#      - On my computer or phone: this_device
+#    show if:
+#      code: |
+#        al_form_requires_digital_signature
+#  - I will sign: signature_choice
+#    input type: radio
+#    choices:
+#      - On my computer or phone: this_device
+#      - On the paper with a pen after I print the documents: sign_after_printing
+#    show if:
+#      code: |
+#        not al_form_requires_digital_signature
+#continue button field: saw_signature_choice    
 ---
 
-##################### PREVIEW SCREEN #######################
----
-id: preview VT_fee_waiver
-question: |
-  Preview your form before you sign it
-subquestion: |
-  
-  Here is a preview of the form you will sign on the next screen. 
-  
-  ${ al_court_bundle.as_pdf(key='preview') }
-
-  Click the image to view it in a new tab. **Remember to come back to this screen to edit the form and/or finish the form.**
-  
-  Click the "Edit your answers" button to make changes.
-
-  ${ action_button_html(url_action('review_VT_fee_waiver'), label='<i class="fa-solid fa-pencil"></i> Edit your answers', color='info') }
-
-  **Tap Next to choose how to sign your form.**
-  
-continue button field: VT_fee_waiver_preview_question    
----
-code: |
-  signature_fields = ['users[0].signature']
----
-code: |
-  # This is a placeholder for the addresses that will be searched
-  # for matching address to court. Edit if court venue is based on 
-  # a different address than the user's
-  addresses_to_search = [user.address for user in users]
----
+###################### PREVIEW SCREEN #######################
+#---
+#id: preview VT_fee_waiver
+#question: |
+#  Preview your form before you sign it
+#subquestion: |
+#  
+#  Here is a preview of the form you will sign on the next screen. 
+#  
+#  ${ al_court_bundle.as_pdf(key='preview') }
+#
+#  Click the image to view it in a new tab. **Remember to come back to this screen to edit the form and/or finish the form.**
+#  
+#  Click the "Edit your answers" button to make changes.
+#
+#  ${ action_button_html(url_action('review_VT_fee_waiver'), label='<i class="fa-solid fa-pencil"></i> Edit your answers', color='info') }
+#
+#  **Tap Next to choose how to sign your form.**
+#  
+#continue button field: VT_fee_waiver_preview_question    
+#---
+#code: |
+#  signature_fields = ['users[0].signature']
+#---
+#code: |
+#  # This is a placeholder for the addresses that will be searched
+#  # for matching address to court. Edit if court venue is based on 
+#  # a different address than the user's
+#  addresses_to_search = [user.address for user in users]
+#---
 
   
   
@@ -2061,11 +1842,6 @@ review:
       ${ showifdef("docket_number") }
       % endif
       
-  - Edit: case_name
-    button: |
-      **Case name**:
-      ${ case_name }
-      
   - note: |
       ###About you
   - Edit: users.revisit
@@ -2106,6 +1882,8 @@ review:
       % endif
   - Edit: 
       - employed
+      - follow up:
+        - review_jobs
     button: |
       **Employed**
       
@@ -2283,7 +2061,7 @@ id: download VT_fee_waiver
 event: VT_fee_waiver_download
 question: |
   ${ download_screen_instructions_headline_one_form }
-subquestion: |  
+subquestion: |
   ${ download_screen_instructions_one_form }
 
   ${ action_button_html(url_action('review_VT_fee_waiver'), label='<i class="fa-solid fa-pencil"></i> Edit your answers', color='info') }
@@ -2302,7 +2080,6 @@ subquestion: |
   
   ${ collapse_template(not_seeing_email) }
   ${ collapse_template(log_out_when_done) }
-  ${ thumbs_up_thumbs_down_review }
 
 progress: 100
 ---
@@ -2310,7 +2087,7 @@ progress: 100
 ---
 attachment:
   variable name: VT_fee_waiver_attachment.addendum
-  docx template file: VT_fee_waiver_addendum.docx
+  docx template file: VT_fee_waiver_to_include_addendum.docx
 ---
 reconsider: True
 code: |
@@ -2368,49 +2145,14 @@ code: |
 ##################### ATTACHMENTS #####################
 ---
 objects:
-  - VT_fee_waiver_post_interview_instructions: ALDocument.using(title="NEXT STEPS - Instructions for filing this form with the court", filename="VT_fee_waiver_next_steps.docx", enabled=True, has_addendum=False, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
-  - VT_fee_waiver_attachment: ALDocument.using(title="Vermont fee waiver form 600-00228", filename="VT_fee_waiver.pdf", enabled=True, has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - VT_fee_waiver_attachment: ALDocument.using(title="Vermont fee waiver form 600-00228", filename="VT_fee_waiver_to_include.pdf", has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
-objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[VT_fee_waiver_post_interview_instructions,VT_fee_waiver_attachment], filename="VT_fee_waiver.pdf_package.pdf", title="All forms to download for your records", enabled=True)
-  - al_court_bundle: ALDocumentBundle.using(elements=[VT_fee_waiver_attachment], filename="VT_fee_waiver.pdf_package.pdf", title="All forms to download for your records", enabled=True)
----
-attachments:
-  - name: VT fee waiver post interview instructions
-    filename: VT_fee_waiver_next_steps
-    variable name: VT_fee_waiver_post_interview_instructions[i]        
-    skip undefined: True
-    docx template file: VT_fee_waiver_next_steps.docx
-    fields:
-        - "address_county": |
-            % if trial_court_division == "Environmental":
-  
-            % elif trial_court_division == "Judicial Bureau":
-              
-            % else:
-            ${ trial_court.address.county } County
-            % endif
-        - "court_division": |
-            % if trial_court_division == "Unknown":
-
-            % else:
-            ${ trial_court.division }
-            % endif          
-        - "name": ${ trial_court }
-        - "address_address": ${ trial_court.address.address }
-        - "address_unit": ${ trial_court.address.unit }
-        - "address_city": ${ trial_court.address.city }
-        - "address_state": ${ trial_court.address.state }
-        - "address_zip": ${ trial_court.address.zip }
-        - "arbitrary_attribute": ${ trial_court.arbitrary_attribute }
-        - "phone": ${ trial_court.phone }
-        - "email": ${ trial_court.email }
-  
+attachments:  
   - name: VT fee waiver attachment
-    filename: VT_fee_waiver.pdf     
+    filename: VT_fee_waiver_to_include.pdf     
     variable name: VT_fee_waiver_attachment[i]        
     skip undefined: True
-    pdf template file: VT_fee_waiver.pdf
+    pdf template file: VT_fee_waiver_to_include.pdf
     fields:
       - "court_division": |
           % if defined("trial_court.division_abbr"):
@@ -2429,7 +2171,20 @@ attachments:
           % else:
           ${ trial_court.address.county }
           % endif
-      - "case_name": ${ case_name }
+      - "case_name_FW": |
+          % if defined("user_role"):
+            % if user_role == "defendant":
+            ${ other_parties.short_list(2) } v. ${ users[0] }
+            % else:
+            ${ users[0] } v. ${ other_parties.short_list(2) } 
+            % endif
+          % elif defined("user_ask_role"):
+            % if user_ask_role == "defendant":
+            ${ other_parties.short_list(2) } v. ${ users[0] }
+            % else:
+            ${ users[0] } v. ${ other_parties.short_list(2) } 
+            % endif
+          % endif
       - "users1_name_full": ${ users[0] }
       - "users1_name_full__1": ${ users[0] }
       - "users1_address_line_one": ${ users[0].address.line_one() }
@@ -2441,11 +2196,11 @@ attachments:
       - "users1_email": ${ users[0].email }
       - "users1_phone_number": ${ users[0].phone_number }
       - "users1_work_phone_number": ${ users[0].work_phone_number }
-      - "household_size": ${ household_size }
-      - "employed_yes": ${ employed }
-      - "employed_no": ${ not employed }
+      - "household_size_FW": ${ household_size }
+      - "employed_yes_FW": ${ employed }
+      - "employed_no_FW": ${ not employed }
       
-      - "users1_employer_0_name": |
+      - "users1_employer_0_name_FW": |
           % if len(jobs) > 0 and jobs[0].is_self_employed:
             Self-employed
           % elif len(jobs) > 0:
@@ -2453,12 +2208,12 @@ attachments:
           % else:
             
           % endif
-      - "users1_employer_0_address_one_line": |
+      - "users1_employer_0_address_one_line_FW": |
           % if defined("jobs[0].employer.address"):
           ${ jobs[0].employer.address.on_one_line() }
           % endif
 
-      - "users1_employer_1_name": |
+      - "users1_employer_1_name_FW": |
           % if len(jobs) > 1 and jobs[1].is_self_employed:
             Self-employed
           % elif len(jobs) > 1:
@@ -2466,27 +2221,27 @@ attachments:
           % else:
             
           % endif
-      - "users1_employer_1_address_one_line": |
+      - "users1_employer_1_address_one_line_FW": |
           % if defined("jobs[1].employer.address"):
           ${ jobs[1].employer.address.on_one_line() }
           % endif
       
-      - "users1_receives_benefits_yes": |
+      - "users1_receives_benefits_yes_FW": |
           % if public_benefits.number_gathered() > 0:
           ${ True }
           % endif
-      - "users1_receives_benefits_no": |
+      - "users1_receives_benefits_no_FW": |
           % if not public_benefits.number_gathered() > 0:
           ${ True }
           % endif
    
-      - "users1_benefits": |
+      - "users1_benefits_FW": |
           % if public_benefits.number_gathered() < 4:
           % if len(comma_list((public_benefit.source for public_benefit in public_benefits.matches(source=["3SquaresVT","Dr Dynasaur","Fuel Assist.","General Assist.","Housing Assist.","Medicaid","Reach Up","SSI"])),(public_benefit.display_name for public_benefit in public_benefits.matches(source="other")))) < 44:
           ${ comma_list((public_benefit.source for public_benefit in public_benefits.matches(source=["3SquaresVT","Dr Dynasaur","Fuel Assist.","General Assist.","Housing Assist.","Medicaid","Reach Up","SSI"])),(public_benefit.display_name for public_benefit in public_benefits.matches(source="other"))) }
           % else:
           ${ comma_list((public_benefits[0].display_name if public_benefits[0].source == "other" else public_benefits[0].source), (public_benefits[1].display_name if public_benefits[1].source == "other" else public_benefits[1].source)) }...
-          % endif:
+          % endif
           % else:
           % if len(comma_list((public_benefits[0].display_name if public_benefits[0].source == "other" else public_benefits[0].source), (public_benefits[1].display_name if public_benefits[1].source == "other" else public_benefits[1].source), (public_benefits[2].display_name if public_benefits[2].source == "other" else public_benefits[2].source))) < 40:
           ${ comma_list((public_benefits[0].display_name if public_benefits[0].source == "other" else public_benefits[0].source), (public_benefits[1].display_name if public_benefits[1].source == "other" else public_benefits[1].source), (public_benefits[2].display_name if public_benefits[2].source == "other" else public_benefits[2].source)) }...
@@ -2495,7 +2250,7 @@ attachments:
           % endif
           % endif
           
-      - "users1_benefits_monthly_amount": |
+      - "users1_benefits_monthly_amount_FW": |
           % if not public_benefits.number_gathered() > 0:
            
           % elif public_benefits.number_gathered() == 1 and public_benefits[0].source == "Medicaid":
@@ -2510,42 +2265,55 @@ attachments:
           ${ round(public_benefits.total(times_per_year=12), 2) }
           % endif
       
-      - "users1_income_employment_monthly_amount": |
-          % if jobs.total(times_per_year=12,exclude_source=["self employed"]) == 0:
+      - "users1_income_employment_monthly_amount_FW": |
+          % if len(public_benefits) == 0 and (jobs.total(times_per_year=12,exclude_source=["self employed"])) == 0:
           
-          % else:
+          % elif len(public_benefits) == 0:
           ${ round(jobs.gross_total(exclude_source=["self employed"],times_per_year=12), 2) }
+
+          % elif len(public_benefits) > 0:
+          
           % endif
-      
-      - "users1_income_unemployment_monthly_amount": |
+      - "users1_income_unemployment_monthly_amount_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if other_incomes.total(source=["unemployment income"],times_per_year=12) == 0:
            
           % else:
           ${ round(other_incomes.total(source=["unemployment income"],times_per_year=12), 2) }
-          % endif      
+          % endif   
+          % endif
 
-      - "users1_income_child_support_monthly_amount": |
+      - "users1_income_child_support_monthly_amount_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if other_incomes.total(source=["child support income"],times_per_year=12) == 0:
             
           % else:
           ${ round(other_incomes.total(source=["child support income"],times_per_year=12), 2) }
-          % endif           
+          % endif
+          % endif
       
-      - "users1_income_other_monthly_amount": |
+      - "users1_income_other_monthly_amount_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if other_incomes.total(exclude_source=["unemployment income","child support income"],times_per_year=12) == 0:
             
           % else:
           ${ round(other_incomes.total(exclude_source=["unemployment income","child support income"],times_per_year=12), 2) }
           % endif   
-      
-      - "users1_income_self_employment_monthly_amount": |
+          % endif
+
+
+          
+      - "users1_income_self_employment_monthly_amount_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if jobs.total(source=["self employed"],times_per_year=12) != 0:
           ${ round(jobs.total(source=["self employed"],times_per_year=12), 2) }
           % else:
           
           % endif
+          % endif
           
-      - "users1_income_monthly_total": |
+      - "users1_income_monthly_total_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if defined("jobs"):
           ${ round(jobs.gross_total(times_per_year=12) + other_incomes.total(times_per_year=12), 2) }
           % elif other_incomes.number_gathered() > 0:
@@ -2553,8 +2321,10 @@ attachments:
           % else:
           ${ round(0, 2) }   
           % endif
+          % endif
           
-      - "users1_income_annual_total": |
+      - "users1_income_annual_total_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if defined("jobs"):
           ${ round(jobs.gross_total(times_per_year=1) + other_incomes.total(times_per_year=1), 2) }
           % elif employed:
@@ -2564,85 +2334,112 @@ attachments:
           % else:
           ${ round(0, 2) }     
           % endif
+          % endif
 
       
-      - "users1_expenses_rent_mortgage_monthly_amount": |
+      - "users1_expenses_rent_mortgage_monthly_amount_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if expenses.total(source=["rent"],times_per_year=12) + expenses.total(source=["mortgage"],times_per_year=12) == 0:
            
           % else:
           ${ round(expenses.total(source=["rent"],times_per_year=12) + expenses.total(source=["mortgage"],times_per_year=12), 2) }  
           % endif      
-       
-      - "users1_expenses_electric_monthly_amount": |
+          % endif
+      - "users1_expenses_electric_monthly_amount_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if expenses.total(source=["electric"],times_per_year=12) == 0:
            
           % else:
           ${ round(expenses.total(source=["electric"],times_per_year=12), 2) }   
           % endif  
-         
-      - "users1_expenses_phone_monthly_amount": |
+          % endif
+      - "users1_expenses_phone_monthly_amount_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if expenses.total(source=["phone"],times_per_year=12) == 0:
            
           % else:
           ${ round(expenses.total(source=["phone"],times_per_year=12), 2) }   
-          % endif  
-      - "users1_expenses_fuel_monthly_amount": |
+          % endif
+          % endif
+      - "users1_expenses_fuel_monthly_amount_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if expenses.total(source=["fuel"],times_per_year=12) == 0:
            
           % else:
           ${ round(expenses.total(source=["fuel"],times_per_year=12), 2) }   
-          % endif  
-      - "users1_expenses_food_monthly_amount": |
+          % endif
+          % endif
+      - "users1_expenses_food_monthly_amount_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if expenses.total(source=["food"],times_per_year=12) == 0:
            
           % else:
           ${ round(expenses.total(source=["food"],times_per_year=12), 2) }   
-          % endif  
-      - "users1_expenses_clothes_monthly_amount": |
+          % endif
+          % endif
+      - "users1_expenses_clothes_monthly_amount_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if expenses.total(source=["clothing"],times_per_year=12) == 0:
            
           % else:
           ${ round(expenses.total(source=["clothing"],times_per_year=12), 2) }   
           % endif  
-      - "users1_expenses_medical_monthly_amount": |
+          % endif
+      - "users1_expenses_medical_monthly_amount_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if expenses.total(source=["medical"],times_per_year=12) == 0:
            
           % else:
           ${ round(expenses.total(source=["medical"],times_per_year=12), 2) }   
           % endif  
-      - "users1_expenses_child_support_monthly_amount": |
+          % endif
+      - "users1_expenses_child_support_monthly_amount_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if expenses.total(source=["child support"],times_per_year=12) == 0:
            
           % else:
           ${ round(expenses.total(source=["child support"],times_per_year=12), 2) }   
           % endif  
-      - "users1_expenses_auto_loan_monthly_amount": |
+          % endif
+      - "users1_expenses_auto_loan_monthly_amount_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if expenses.total(source=["auto loan"],times_per_year=12) == 0:
            
           % else:
           ${ round(expenses.total(source=["auto loan"],times_per_year=12), 2) }   
           % endif  
-      - "users1_expenses_property_tax_monthly_amount": |
+          % endif
+      - "users1_expenses_property_tax_monthly_amount_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if expenses.total(source=["property tax"],times_per_year=12) == 0:
            
           % else:
           ${ round(expenses.total(source=["property tax"],times_per_year=12), 2) }   
           % endif  
-      - "users1_expenses_all_insurance_monthly_amount": |
+          % endif
+      - "users1_expenses_all_insurance_monthly_amount_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if expenses.total(source=["health insurance", "auto insurance", "other insurance"],times_per_year=12) == 0:
            
           % else:
           ${ round(expenses.total(source=["health insurance", "auto insurance", "other insurance"],times_per_year=12), 2) }  
           % endif  
-      - "users1_expenses_other_monthly_amount": |
+          % endif
+      - "users1_expenses_other_monthly_amount_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if expenses.total(exclude_source=["rent", "mortgage", "electric", "phone", "fuel", "food", "clothing", "medical", "child support", "auto loan", "property tax", "health insurance", "auto insurance", "other insurance" ],times_per_year=12) == 0:
            
           % else:
           ${ round(expenses.total(exclude_source=["rent", "mortgage", "electric", "phone", "fuel", "food", "clothing", "medical", "child support", "auto loan", "property tax", "health insurance", "auto insurance", "other insurance" ],times_per_year=12), 2) } 
           % endif  
-      - "users1_expenses_monthly_total": ${ round(expenses.total(times_per_year=12), 2) }
+          % endif
+      - "users1_expenses_monthly_total_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ round(expenses.total(times_per_year=12), 2) }
+          % endif
       
-      - "assets_yes": |
+      - "assets_yes_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if vehicles.number_gathered() > 0:
           ${ "True" }
           % elif real_estate.number_gathered() > 0:
@@ -2652,33 +2449,79 @@ attachments:
           % elif other_assets.number_gathered() > 0:
           ${ "True" }
           % endif
-      - "assets_no": |
+          % endif
+      - "assets_no_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if vehicles.number_gathered() == 0 and real_estate.number_gathered() == 0 and  bank_assets.number_gathered() == 0 and other_assets.number_gathered() == 0:
           ${ "True" }
           % endif
-
-      - "users1_assets_vehicle_0_amount_owed": ${ currency(vehicles[0].balance,symbol="") }
-      - "users1_assets_vehicle_0_description": |
+          % endif
+      - "users1_assets_vehicle_0_amount_owed_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ currency(vehicles[0].balance,symbol="") }
+          % endif
+      - "users1_assets_vehicle_0_description_FW": |
+           % if public_benefits.number_gathered() == 0:
            ${ vehicles[0].make } ${ vehicles[0].model } ${ vehicles[0].year } 
-      - "users1_assets_vehicle_0_net_value": ${ currency(vehicles[0].market_value - vehicles[0].balance,symbol="") }
-      - "users1_assets_vehicle_0_market_value": ${ currency(vehicles[0].market_value,symbol="") }
-      - "users1_assets_vehicle_1_description": |
-           ${ vehicles[1].make } ${ vehicles[1].model } ${ vehicles[1].year } 
-      - "users1_assets_vehicle_1_market_value": ${ currency(vehicles[1].market_value,symbol="") }
-      - "users1_assets_vehicle_1_amount_owed": ${ currency(vehicles[1].balance,symbol="") }
-      - "users1_assets_vehicle_1_net_value": ${ currency(vehicles[1].market_value - vehicles[1].balance,symbol="") }
-      - "users1_assets_vehicle_2_description": |
-           ${ vehicles[2].make } ${ vehicles[2].model } ${ vehicles[2].year } 
-      - "users1_assets_vehicle_2_amount_owed": ${ currency(vehicles[2].balance,symbol="") }
-      - "users1_assets_vehicle_2_net_value": ${ currency(vehicles[2].market_value - vehicles[2].balance,symbol="") }
-      - "users1_assets_vehicle_2_market_value": ${ currency(vehicles[2].market_value,symbol="") }
-      - "users1_assets_vehicle_3_description": |
-           ${ vehicles[3].make } ${ vehicles[3].model } ${ vehicles[3].year } 
-      - "users1_assets_vehicle_3_market_value": ${ currency(vehicles[3].market_value,symbol="") }
-      - "users1_assets_vehicle_3_amount_owed": ${ currency(vehicles[3].balance,symbol="") }
-      - "users1_assets_vehicle_3_net_value": ${ currency(vehicles[3].market_value - vehicles[3].balance,symbol="") }
-      
-      - "users1_assets_real_estate_0_description": |
+           % endif
+      - "users1_assets_vehicle_0_net_value_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ currency(vehicles[0].market_value - vehicles[0].balance,symbol="") }
+          % endif
+      - "users1_assets_vehicle_0_market_value_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ currency(vehicles[0].market_value,symbol="") }
+          % endif
+      - "users1_assets_vehicle_1_description_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ vehicles[1].make } ${ vehicles[1].model } ${ vehicles[1].year }
+          % endif
+      - "users1_assets_vehicle_1_market_value_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ currency(vehicles[1].market_value,symbol="") }
+          % endif
+      - "users1_assets_vehicle_1_amount_owed_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ currency(vehicles[1].balance,symbol="") }
+          % endif
+      - "users1_assets_vehicle_1_net_value_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ currency(vehicles[1].market_value - vehicles[1].balance,symbol="") }
+          % endif
+      - "users1_assets_vehicle_2_description_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ vehicles[2].make } ${ vehicles[2].model } ${ vehicles[2].year } 
+          % endif
+      - "users1_assets_vehicle_2_amount_owed_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ currency(vehicles[2].balance,symbol="") }
+          % endif
+      - "users1_assets_vehicle_2_net_value_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ currency(vehicles[2].market_value - vehicles[2].balance,symbol="") }
+          % endif
+      - "users1_assets_vehicle_2_market_value_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ currency(vehicles[2].market_value,symbol="") }
+          % endif
+      - "users1_assets_vehicle_3_description_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ vehicles[3].make } ${ vehicles[3].model } ${ vehicles[3].year } 
+          % endif
+      - "users1_assets_vehicle_3_market_value_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ currency(vehicles[3].market_value,symbol="") }
+          % endif
+      - "users1_assets_vehicle_3_amount_owed_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ currency(vehicles[3].balance,symbol="") }
+          % endif
+      - "users1_assets_vehicle_3_net_value_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ currency(vehicles[3].market_value - vehicles[3].balance,symbol="") }
+          % endif      
+      - "users1_assets_real_estate_0_description_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if real_estate.number_gathered() > 0:
           % if real_estate[0].source == "primary residence":
           Primary residence
@@ -2688,11 +2531,21 @@ attachments:
           ${ real_estate[0].display_name }
           % endif
           % endif
-      - "users1_assets_real_estate_0_market_value": ${ currency(real_estate[0].market_value,symbol="") }
-      - "users1_assets_real_estate_0_amount_owed": ${ currency(real_estate[0].balance,symbol="") }
-      - "users1_assets_real_estate_0_net_value": ${ currency(real_estate[0].market_value - real_estate[0].balance,symbol="") }
-
-      - "users1_assets_real_estate_1_description": |
+          % endif
+      - "users1_assets_real_estate_0_market_value_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ currency(real_estate[0].market_value,symbol="") }
+          % endif
+      - "users1_assets_real_estate_0_amount_owed_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ currency(real_estate[0].balance,symbol="") }
+          % endif
+      - "users1_assets_real_estate_0_net_value_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ currency(real_estate[0].market_value - real_estate[0].balance,symbol="") }
+          % endif
+      - "users1_assets_real_estate_1_description_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if real_estate.number_gathered() > 1:
           % if real_estate[1].source == "primary residence":
           Primary residence
@@ -2702,36 +2555,67 @@ attachments:
           ${ real_estate[1].display_name }
           % endif
           % endif
-      - "users1_assets_real_estate_1_market_value": ${ currency(real_estate[1].market_value,symbol="") }
-      - "users1_assets_real_estate_1_amount_owed": ${ currency(real_estate[1].balance,symbol="") }
-      - "users1_assets_real_estate_1_net_value": ${ currency(real_estate[1].market_value - real_estate[1].balance,symbol="") }
-      
-      - "users1_assets_checking_accounts": |
+          % endif
+      - "users1_assets_real_estate_1_market_value_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ currency(real_estate[1].market_value,symbol="") }
+          % endif
+      - "users1_assets_real_estate_1_amount_owed_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ currency(real_estate[1].balance,symbol="") }
+          % endif
+      - "users1_assets_real_estate_1_net_value_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ currency(real_estate[1].market_value - real_estate[1].balance,symbol="") }
+          % endif      
+      - "users1_assets_checking_accounts_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if bank_assets.market_value(source=["checking account"]) == 0:
            
           % else:
           ${ currency(bank_assets.market_value(source=["checking account"]),symbol="") }
-          % endif            
-     
-      - "users1_assets_cash_on_hand": |
+          % endif        
+          % endif     
+      - "users1_assets_cash_on_hand_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if bank_assets.market_value(source=["cash on hand"]) == 0:
            
           % else:
           ${ currency(bank_assets.market_value(source=["cash on hand"]),symbol="") }
           % endif      
-      - "users1_assets_savings_accounts": |
+          % endif
+      - "users1_assets_savings_accounts_FW": |
+          % if public_benefits.number_gathered() == 0:
           % if bank_assets.market_value(source=["savings account"]) == 0:
            
           % else:
           ${ currency(bank_assets.market_value(source=["savings account"]),symbol="") }
+          % endif   
+          % endif
+      - "users1_assets_cash_total_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ currency(bank_assets.market_value(),symbol="") }
           % endif      
-      - "users1_assets_cash_total": ${ currency(bank_assets.market_value(),symbol="") }
-      
-      - "users1_assets_other_0_market_value": ${ currency(other_assets[0].market_value,symbol="") }
-      - "users1_assets_other_0_description": ${ other_assets[0].display_name }
-      - "users1_assets_other_1_market_value": ${ currency(other_assets[1].market_value,symbol="") }
-      - "users1_assets_other_1_description": ${ other_assets[1].display_name }
-      
-      - "other_reasons_why_cannot_afford": ${VT_fee_waiver_attachment.safe_value("other_reasons_why_cannot_afford")}
+      - "users1_assets_other_0_market_value_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ currency(other_assets[0].market_value,symbol="") }
+          % endif
+      - "users1_assets_other_0_description_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ other_assets[0].display_name }
+          % endif
+      - "users1_assets_other_1_market_value_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ currency(other_assets[1].market_value,symbol="") }
+          % endif
+      - "users1_assets_other_1_description_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${ other_assets[1].display_name }
+          % endif      
+      - "other_reasons_why_cannot_afford_FW": |
+          % if public_benefits.number_gathered() == 0:
+          ${VT_fee_waiver_attachment.safe_value("other_reasons_why_cannot_afford")}
+          % endif
       - "signature_date": ${ signature_date }
       - "users1_signature": ${ users[0].signature_if_final(i) }
+---
