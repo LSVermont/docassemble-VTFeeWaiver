@@ -2087,7 +2087,7 @@ progress: 100
 ---
 attachment:
   variable name: VT_fee_waiver_attachment.addendum
-  docx template file: VT_fee_waiver_addendum.docx
+  docx template file: VT_fee_waiver_to_include_addendum.docx
 ---
 reconsider: True
 code: |
@@ -2145,14 +2145,14 @@ code: |
 ##################### ATTACHMENTS #####################
 ---
 objects:
-  - VT_fee_waiver_attachment: ALDocument.using(title="Vermont fee waiver form 600-00228", filename="VT_fee_waiver.pdf", has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - VT_fee_waiver_attachment: ALDocument.using(title="Vermont fee waiver form 600-00228", filename="VT_fee_waiver_to_include.pdf", has_addendum=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 attachments:  
   - name: VT fee waiver attachment
-    filename: VT_fee_waiver.pdf     
+    filename: VT_fee_waiver_to_include.pdf     
     variable name: VT_fee_waiver_attachment[i]        
     skip undefined: True
-    pdf template file: VT_fee_waiver.pdf
+    pdf template file: VT_fee_waiver_to_include.pdf
     fields:
       - "court_division": |
           % if defined("trial_court.division_abbr"):
