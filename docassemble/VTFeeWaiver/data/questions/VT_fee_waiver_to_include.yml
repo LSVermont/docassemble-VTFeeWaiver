@@ -2185,7 +2185,6 @@ attachments:
             % endif
           % endif
       - "users1_name_full": ${ users[0] }
-      - "users1_name_full__1": ${ users[0] }
       - "users1_address_line_one": ${ users[0].address.line_one() }
       - "users1_address_line_two": ${ users[0].address.line_two() }
       - "users1_mailing_address_on_one_line": |
@@ -2617,4 +2616,5 @@ attachments:
           % endif
       - "signature_date": ${ signature_date }
       - "users1_signature": ${ users[0].signature_if_final(i) }
+      - "printed_signature": ${ printed_signature }
 ---
